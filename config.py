@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding=utf-8 -*-
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))#首先获得当前文件（比如配置文件）所在的路径
 
@@ -12,26 +12,26 @@ class Config(object):
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 25
     MAIL_USE_TLS = True
-    FLASK_MAIL_SUBJECT_PREFIX = '[Flasky博客]'
-    FLASK_MAIL_SENDER = 'Flasky Admin <420151940@qq.com>'
+    FLASK_MAIL_SUBJECT_PREFIX = '[ZJW博客]'
+    FLASK_MAIL_SENDER = 'ZJW Admin <420151940@qq.com>'
     FLASK_ADMIN = os.environ.get('FLASKY_ADMIN')
     FLASK_POSTS_PER_PAGE = 15
     FLASK_COMMENT_PER_PAGE = 20
-    FLASK_FOLLOWES_PER_PAGE = 20
+    FLASK_FOLLOWERS_PER_PAGE = 20
     FLASK_SLOW_DB_QUERY_TIME = 0.5
-
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     @staticmethod
     def init_app(app):
         pass
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABAES_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlit')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URO = os.envrion.get('TEST_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
     WTF_CSRF_ENABLED = False
 

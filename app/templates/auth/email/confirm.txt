@@ -1,0 +1,9 @@
+亲爱的用户 {{ user.username }},
+
+欢迎加入 ZJW闲谈
+
+点击链接验证邮箱 {{ url_for('auth.confirm', token=token, _external=True) }}
+
+谢谢
+
+注意：回复此邮件地址不可用.
