@@ -32,10 +32,41 @@ def profile(length=25, profile_dir=None):
     '''在请求分析器的监视下运行程序'''
     pass
 
+#测试数据库初始化
+@manager.command
+def datainit():
+    from app.models import Role,User,Post
+    print ("Role init")
+    User.add_self_follows()
+    Role.insert_role()
+    print ("User and Post generate")
+    User.generate_fake(100)
+    Post.generate_fake(100)
+    wen=User.query.filter_by(username='wen').first()
+    if not wen:
+        print ("make wen in admin")
+        wen=User(username='wen',email='zhangjinwei94@163.com',password='123456',confirmed=True)
+        wen.role=Role.query.filter_by(permissions=0xff).first()
+        db.session.add(wen)
+        db.session.commit()
+    else :
+        print ("User(wen) already in data")
+    print ("all_data readly now")
+
 
 @manager.command
 def deploy():
-    pass
+    """Run deployment tasks."""
+    from flask.ext.migrate import upgrade
+    from app.models import Role, User
+
+    # migrate database to latest revision
+    #upgrade()
+
+    # create user roles
+    Role.insert_role()
+
+
 
 
 if __name__ == '__main__':

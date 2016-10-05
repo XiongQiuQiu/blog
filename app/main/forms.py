@@ -52,6 +52,7 @@ class EditProfileAdminForm(Form):
             raise ValidationError('用户名已经被使用')
 
 class PostForm(Form):
+    title = StringField('标题', validators=[DataRequired()])
     body = PageDownField('说说你的想法', validators=[DataRequired()])
     submit = SubmitField('提交')
 

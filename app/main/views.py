@@ -34,6 +34,7 @@ def index():
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
         post = Post(body=form.body.data,
+                    title=form.title.data,
                     author=current_user._get_current_object())
         db.session.add(post)
         return redirect(url_for('.index'))
@@ -141,12 +142,14 @@ def edit(id):
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        post.bady - form.body.data
+        post.title = form.title.data
+        post.body = form.body.data
         db.session.add(post)
         flash('文章已更新')
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
-    return render_template('edis_post.html', form=form)
+    form.title.data = post.title
+    return render_template('edit_post.html', form=form)
 
 
 @main.route('/follow/<username>')
