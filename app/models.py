@@ -241,14 +241,31 @@ class User(UserMixin, db.Model):  # UserMixin包含实现一些用户方法的�
         return Post.query.join(Follow, Follow.followed_id == Post.author_id).filter(Follow.follower_id == self.id)
 
     def to_json(self):
-        pass
+        json_user = {
+            'url': url_for('api.get_user', id=self.id, _external=True),
+            'username': self.username,
+            'member_since': self.member_since,
+            'last_seen': self.lase_seen,
+            'posts': url_for('api.get_user_posts', id=self.id, _external=True),
+            'followed_posts': url_for('api.get_user_folloewd_posts',
+                                      id=self.id, _external=True),
+            'post_count': self.posts.count()
+        }
+        return json_user
 
-    def generate_auth_token(self):
-        pass
+    def generate_auth_token(self, expiration):
+        s = Serializer(current_app.config['SECRET_KEY'],
+                       expires_in=expiration)
+        return s.dumps({'id': self.id}).decode('ascii')
 
     @staticmethod
     def verify_auth_token(token):
-        pass
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
 
 
 class AnonymousUser(AnonymousUserMixin):
@@ -299,11 +316,25 @@ class Post(db.Model):
         #markdown 转换成 html
 
     def to_json(self):
-        pass
+        json_post = {
+            'url': url_for('api.get_post', id=self.id, _external=True),
+            'body': self.body,
+            'body_html': self.body_html,
+            'tiemstamp': self.timestamp,
+            'author': url_for('api.get_user', id=self.author_id,
+                              _external=True),
+            'comments': url_for('api.get_post_comments', id=self.id,
+                                _external=True),
+            'comment_count': self.comments.count()
+        }
+        return json_post
 
     @staticmethod
     def from_json(json_post):
-        pass
+        body = json_post.get('body')
+        if body is None or body == '':
+            raise ValidationError('post does not have a body')
+        return Post(body=body)
 db.event.listen(Post.body, 'set', Post.on_changed_body)#监听body字段，一旦设置成功自动调用on_changed_body
 
 
