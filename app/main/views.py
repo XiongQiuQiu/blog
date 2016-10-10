@@ -118,7 +118,7 @@ def post(id):
     if form.validate_on_submit():
         comment = Comment(body=form.body.data,
                           post=post,
-                          author=current_user._get_current_objecy())
+                          author=current_user._get_current_object())
         db.session.add(comment)
         flash('已评论')
         return redirect(url_for('.post', id=post.id, page=-1))
@@ -156,7 +156,7 @@ def edit(id):
 @login_required
 @permission_required(Permission.FOLLOW)
 def follow(username):
-    user = User.query.filter_by(usernmae=username).first()
+    user = User.query.filter_by(username=username).first()
     if user is None:
         flash('错误用户')
         return redirect(url_for('.index'))
@@ -196,7 +196,7 @@ def followers(username):
         error_out=False
     )
     follows = [{'user': item.follower, 'timestamp': item.timestamp} for item in pagination.items]
-    return render_template('followes.html', user=user, title='Followers of',
+    return render_template('followers.html', user=user, title='Followers of',
                            endpoint='.followers', pagination=pagination,
                            follows=follows)#endpoint定义当前页码url
 
@@ -256,10 +256,11 @@ def moderate_enable(id):
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int))
                     )
 
+
 @main.route('/moderate/disable/<int:id>')
 @login_required
 @permission_required(Permission.MODERATE_COMMENTS)
-def moderate_diaable(id):
+def moderate_disable(id):
     comment = Comment.query.get_or_404(id)
     comment.disabled = True
     db.session.add(comment)

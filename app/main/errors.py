@@ -13,8 +13,8 @@ def forbidden(e):
 
 @main.app_errorhandler(404)
 def page_not_found(e):
-    if request.accept_mimetype.accept_mimetypes.accept_json and \
-            not request.accept_mimetyped.accept_html:
+    if request.accept_mimetypes.accept_json and \
+            not request.accept_mimetypes.accept_html:
         response = jsonify({'erroe':'not found'})
         response.status_code = 404
         return response

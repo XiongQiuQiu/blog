@@ -219,7 +219,7 @@ class User(UserMixin, db.Model):  # UserMixin包含实现一些用户方法的�
         )
 
     def follow(self, user):
-        if not self.is_followind(user):
+        if not self.is_following(user):
             f = Follow(followed=user)
             self.followed.append(f)
 
